@@ -1,0 +1,46 @@
+package com.revature.karl.servlet;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revature.karl.model.User;
+import com.revature.karl.service.UserService;
+
+public class UserServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	private ObjectMapper objectMapper = new ObjectMapper();
+	private UserService userService = new UserService();
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		String inOut = request.getRequestURI().split("/")[2];
+		
+		BufferedReader reader = request.getReader();
+		StringBuilder builder = new StringBuilder();
+		String line;
+		while ((line = reader.readLine()) != null) {
+			builder.append(line);
+		}
+		String jsonString = builder.toString();
+
+		try {
+			User user = objectMapper.readValue(jsonString, User.class);
+			String logInOutAttempt = userService.logInOutUser(inOut, user);
+
+			response.getWriter().append(logInOutAttempt);
+			response.setContentType("application/json");
+			response.setStatus(201);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+			response.setStatus(400);
+		}
+	}
+
+}
