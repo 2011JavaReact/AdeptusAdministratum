@@ -53,7 +53,7 @@ public class PlanetDAO {
 	public Planet getPlanet(int idParam) {
 
 		logger.debug("Request for one planet");
-		String sqlQuery = "SELECT * FROM planets p INNER JOIN garrisons g ON p.garrison_id = g.id WHERE id = ?";
+		String sqlQuery = "SELECT * FROM planets p INNER JOIN garrisons g ON p.garrison_id = g.id WHERE p.id = ?";
 
 		try (Connection connection = JDBCUtility.getConnection()) {
 			PreparedStatement statement = connection.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
