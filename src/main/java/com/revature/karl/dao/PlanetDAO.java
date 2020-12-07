@@ -70,7 +70,8 @@ public class PlanetDAO {
 			int size = resultSet.getInt(8);
 
 			logger.debug("Successfully got planet");
-			return new Planet(id, name, inhabitants, population, garrison_id, new Garrison(garrison_id, chapter, size));
+			return new Planet(id, name, inhabitants, population, garrison_id,
+					new Garrison(garrison_id, chapter, size));
 		} catch (SQLException e) {
 			logger.debug("Failed to get planet");
 			e.printStackTrace();
