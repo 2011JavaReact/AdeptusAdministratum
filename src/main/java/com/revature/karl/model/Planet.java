@@ -7,6 +7,7 @@ public class Planet {
 	private String inhabitants;
 	private int population;
 	private int garrison_id;
+	private Garrison garrison;
 
 	public Planet() {
 		super();
@@ -25,6 +26,15 @@ public class Planet {
 		this.inhabitants = inhabitants;
 		this.population = population;
 		this.garrison_id = garrison_id;
+	}
+	
+	public Planet(int id, String name, String inhabitants, int population, int garrison_id, Garrison garrison) {
+		this.id = id;
+		this.name = name;
+		this.inhabitants = inhabitants;
+		this.population = population;
+		this.garrison_id = garrison_id;
+		this.garrison = garrison;
 	}
 
 	public int getId() {
@@ -80,5 +90,13 @@ public class Planet {
 		} else {
 			return false;
 		}
+	}
+
+	public Garrison getGarrison() {
+		return garrison;
+	}
+
+	public void setGarrison(Garrison garrison) {
+		this.garrison = garrison;
 	}
 }

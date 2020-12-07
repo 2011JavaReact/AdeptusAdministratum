@@ -103,4 +103,8 @@ Receives a username and password in a JSON format, and authenticates the credent
 }
 ```
 
-Jenkins
+
+-sudo vim /etc/profile.d/env.sh
+-export {env-variable-name}='{env_variable};
+-source /etc/profile.d/env.sh
+-echo ${env-variable-name}

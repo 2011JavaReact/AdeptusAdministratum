@@ -10,32 +10,48 @@ import java.util.ArrayList;
 import org.apache.log4j.Logger;
 
 import com.revature.karl.model.Planet;
+import com.revature.karl.model.Garrison;
 import com.revature.karl.util.JDBCUtility;
 
 public class PlanetDAO {
-	
+
 	Logger logger = Logger.getLogger(PlanetDAO.class);
-	
+
 	public ArrayList<Planet> getAllPlanets() {
-		
+
 		logger.debug("Request for all planets");
 		ArrayList<Planet> planets = new ArrayList<>();
 
 		try (Connection connection = JDBCUtility.getConnection()) {
 
-			String sqlQuery = "SELECT * " + "FROM planets";
+			String sqlQuery = "SELECT * from planets p INNER JOIN garrisons g ON p.garrison_id = g.id";
 			PreparedStatement statement = connection.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
 			ResultSet resultSet = statement.executeQuery();
 
 			while (resultSet.next()) {
-				int id = resultSet.getInt(1);
+				int planet_id = resultSet.getInt(1);
 				String name = resultSet.getString(2);
 				String inhabitants = resultSet.getString(3);
 				int population = resultSet.getInt(4);
 				int garrison_id = resultSet.getInt(5);
-
-				Planet planet = new Planet(id, name, inhabitants, population, garrison_id);
-				planets.add(planet);
+				
+				String chapter = resultSet.getString(7);
+				int size = resultSet.getInt(8);
+				
+				planets.add(
+						new Planet(
+								planet_id, 
+								name, 
+								inhabitants, 
+								population, 
+								garrison_id, 
+								new Garrison(
+										garrison_id, 
+										chapter, 
+										size
+								) 
+						)
+				);
 			}
 			logger.debug("Successfully got all planets");
 			return planets;
@@ -45,12 +61,12 @@ public class PlanetDAO {
 		}
 		return planets;
 	}
-	
+
 	public Planet getPlanet(int idParam) {
-		
+
 		logger.debug("Request for one planet");
 		String sqlQuery = "SELECT * " + "FROM planets " + "WHERE id = ?";
-		
+
 		try (Connection connection = JDBCUtility.getConnection()) {
 			PreparedStatement statement = connection.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
 			statement.setInt(1, idParam);
@@ -61,7 +77,7 @@ public class PlanetDAO {
 			String inhabitants = resultSet.getString(3);
 			int population = resultSet.getInt(4);
 			int garrison_id = resultSet.getInt(5);
-			
+
 			logger.debug("Successfully got planet");
 			return new Planet(id, name, inhabitants, population, garrison_id);
 		} catch (SQLException e) {
@@ -70,17 +86,15 @@ public class PlanetDAO {
 		}
 		return null;
 	}
-	
+
 	public Planet insertPlanet(Planet planet) {
-		
+
 		logger.debug("Request to insert planet");
-		
+
 		try (Connection connection = JDBCUtility.getConnection()) {
 			connection.setAutoCommit(false);
 
-			String sqlQuery = "INSERT INTO planets " 
-					+ "(name, inhabitants, population, garrison_id) " 
-					+ "VALUES " 
+			String sqlQuery = "INSERT INTO planets " + "(name, inhabitants, population, garrison_id) " + "VALUES "
 					+ "(?, ?, ?, ?)";
 
 			PreparedStatement statement = connection.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
@@ -103,27 +117,24 @@ public class PlanetDAO {
 
 			logger.debug("Successfully inserted planet");
 			connection.commit();
-			return new Planet(autoID, planet.getName(), planet.getInhabitants(), planet.getPopulation(), planet.getGarrison_id());
+			return new Planet(autoID, planet.getName(), planet.getInhabitants(), planet.getPopulation(),
+					planet.getGarrison_id());
 		} catch (SQLException e) {
 			logger.debug("Failed to insert planet");
 			e.printStackTrace();
 		}
 		return null;
 	}
-	
+
 	public Planet updatePlanet(int id, Planet planet) {
-		
+
 		logger.debug("Request to update planet");
-		
+
 		try (Connection connection = JDBCUtility.getConnection()) {
 			connection.setAutoCommit(false);
 
-			String sqlQuery = "UPDATE planets " 
-					+ "SET name = ?,"
-					+ "inhabitants = ?,"
-					+ "population = ?,"
-					+ "garrison_id = ?"
-					+ "where id = ?"; 
+			String sqlQuery = "UPDATE planets " + "SET name = ?," + "inhabitants = ?," + "population = ?,"
+					+ "garrison_id = ?" + "where id = ?";
 
 			PreparedStatement statement = connection.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
 			statement.setString(1, planet.getName());
@@ -138,7 +149,8 @@ public class PlanetDAO {
 
 			connection.commit();
 			logger.debug("Successfully updated planet");
-			return new Planet(id, planet.getName(), planet.getInhabitants(), planet.getPopulation(), planet.getGarrison_id());
+			return new Planet(id, planet.getName(), planet.getInhabitants(), planet.getPopulation(),
+					planet.getGarrison_id());
 		} catch (SQLException e) {
 			logger.debug("Failed to update planet");
 			e.printStackTrace();
@@ -147,14 +159,13 @@ public class PlanetDAO {
 	}
 
 	public void deletePlanet(int id) {
-		
+
 		logger.debug("Request to delete planet");
-		
+
 		try (Connection connection = JDBCUtility.getConnection()) {
 			connection.setAutoCommit(false);
 
-			String sqlQuery = "DELETE FROM planets "
-					+ " where id = ?"; 
+			String sqlQuery = "DELETE FROM planets " + " where id = ?";
 
 			PreparedStatement statement = connection.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
 			statement.setInt(1, id);
