@@ -34,24 +34,12 @@ public class PlanetDAO {
 				String inhabitants = resultSet.getString(3);
 				int population = resultSet.getInt(4);
 				int garrison_id = resultSet.getInt(5);
-				
+
 				String chapter = resultSet.getString(7);
 				int size = resultSet.getInt(8);
-				
-				planets.add(
-						new Planet(
-								planet_id, 
-								name, 
-								inhabitants, 
-								population, 
-								garrison_id, 
-								new Garrison(
-										garrison_id, 
-										chapter, 
-										size
-								) 
-						)
-				);
+
+				planets.add(new Planet(planet_id, name, inhabitants, population, garrison_id,
+						new Garrison(garrison_id, chapter, size)));
 			}
 			logger.debug("Successfully got all planets");
 			return planets;
@@ -65,7 +53,7 @@ public class PlanetDAO {
 	public Planet getPlanet(int idParam) {
 
 		logger.debug("Request for one planet");
-		String sqlQuery = "SELECT * " + "FROM planets " + "WHERE id = ?";
+		String sqlQuery = "SELECT * FROM planets p INNER JOIN garrisons g ON p.garrison_id = g.id WHERE id = ?";
 
 		try (Connection connection = JDBCUtility.getConnection()) {
 			PreparedStatement statement = connection.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
@@ -78,8 +66,11 @@ public class PlanetDAO {
 			int population = resultSet.getInt(4);
 			int garrison_id = resultSet.getInt(5);
 
+			String chapter = resultSet.getString(7);
+			int size = resultSet.getInt(8);
+
 			logger.debug("Successfully got planet");
-			return new Planet(id, name, inhabitants, population, garrison_id);
+			return new Planet(id, name, inhabitants, population, garrison_id, new Garrison(garrison_id, chapter, size));
 		} catch (SQLException e) {
 			logger.debug("Failed to get planet");
 			e.printStackTrace();
