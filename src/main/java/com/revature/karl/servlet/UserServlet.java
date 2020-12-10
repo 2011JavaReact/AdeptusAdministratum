@@ -13,13 +13,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.karl.model.User;
 import com.revature.karl.service.UserService;
 
+import org.apache.log4j.Logger;
+
 public class UserServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private ObjectMapper objectMapper = new ObjectMapper();
 	private UserService userService = new UserService();
+	
+	Logger logger = Logger.getLogger(UserServlet.class);
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		logger.debug("UserServlet's doPOST hit");
+		
 		String inOut = request.getRequestURI().split("/")[2];
 		
 		BufferedReader reader = request.getReader();
