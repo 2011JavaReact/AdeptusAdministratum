@@ -15,7 +15,7 @@ public class UserService {
 		this.userDAO = userDAO;
 	}
 
-	public String logInOutUser(String inOut, User user) {
+	public User logInOutUser(String inOut, User user) {
 		return userDAO.logInOutUser(inOut, user);
 	}
 

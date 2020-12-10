@@ -2,6 +2,7 @@ package com.revature.karl.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -14,7 +15,7 @@ public class UserDAO {
 	
 	Logger logger = Logger.getLogger(UserDAO.class);
 
-	public String logInOutUser(String inOut, User user) {
+	public User logInOutUser(String inOut, User user) {
 	
 		logger.debug("Request for user authentication action");
 		
@@ -22,6 +23,8 @@ public class UserDAO {
 			logger.debug("Request for user log in");
 			try (Connection connection = JDBCUtility.getConnection()) {
 				connection.setAutoCommit(false);
+				
+				//Update user
 				String sqlQuery = "UPDATE users SET isLoggedIn = true WHERE username = ? AND password = ?";
 				PreparedStatement statement = connection.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
 				statement.setString(1, user.getUsername());
@@ -30,10 +33,30 @@ public class UserDAO {
 				if (statement.executeUpdate() != 1) {
 					throw new SQLException("Log in failed, no rows were affected.");
 				}
+				
+				int autoID = 0;
+				ResultSet generatedKeys = statement.getGeneratedKeys();
+				if (generatedKeys.next()) {
+					autoID = generatedKeys.getInt(1);
+				} else {
+					throw new SQLException("Inserting garrison failed, no ID generated.");
+				}
+				
+				//Get the newly logged in user
+				String getUserQuery = "SELECT * FROM users WHERE id = ?";
+				PreparedStatement getUserstatement = connection.prepareStatement(getUserQuery, Statement.RETURN_GENERATED_KEYS);
+				getUserstatement.setInt(1, autoID);
+				ResultSet resultSet = getUserstatement.executeQuery();
+				resultSet.next();
+				
+				String username = resultSet.getString(2);
+				String password = resultSet.getString(3);
+				boolean isLoggedIn = resultSet.getBoolean(4);
+				boolean isAdmin = resultSet.getBoolean(5);
 
 				connection.commit();
 				logger.debug("Successfully logged user in");
-				return "User has been logged in!";
+				return new User(autoID, username, password, isLoggedIn, isAdmin);
 			} catch (SQLException e) {
 				logger.debug("Failed to log user in");
 				e.printStackTrace();
@@ -50,10 +73,30 @@ public class UserDAO {
 				if (statement.executeUpdate() != 1) {
 					throw new SQLException("Log out failed, no rows were affected.");
 				}
+				
+				int autoID = 0;
+				ResultSet generatedKeys = statement.getGeneratedKeys();
+				if (generatedKeys.next()) {
+					autoID = generatedKeys.getInt(1);
+				} else {
+					throw new SQLException("Inserting garrison failed, no ID generated.");
+				}
+				
+				//Get the newly logged out user
+				String getUserQuery = "SELECT * FROM users WHERE id = ?";
+				PreparedStatement getUserstatement = connection.prepareStatement(getUserQuery, Statement.RETURN_GENERATED_KEYS);
+				getUserstatement.setInt(1, autoID);
+				ResultSet resultSet = getUserstatement.executeQuery();
+				resultSet.next();
+				
+				String username = resultSet.getString(2);
+				String password = resultSet.getString(3);
+				boolean isLoggedIn = resultSet.getBoolean(4);
+				boolean isAdmin = resultSet.getBoolean(5);
 
 				connection.commit();
 				logger.debug("Successfully logged user out");
-				return "User has been logged out!";
+				return new User(autoID, username, password, isLoggedIn, isAdmin);
 			} catch (SQLException e) {
 				logger.debug("Failed to log user out");
 				e.printStackTrace();

@@ -32,9 +32,10 @@ public class UserServlet extends HttpServlet {
 
 		try {
 			User user = objectMapper.readValue(jsonString, User.class);
-			String logInOutAttempt = userService.logInOutUser(inOut, user);
+			User logInOutAttempt = userService.logInOutUser(inOut, user);
+			String returnString = objectMapper.writeValueAsString(logInOutAttempt);
 
-			response.getWriter().append(logInOutAttempt);
+			response.getWriter().append(returnString);
 			response.setContentType("application/json");
 			response.setStatus(201);
 		} catch (JsonProcessingException e) {
