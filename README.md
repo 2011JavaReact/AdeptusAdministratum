@@ -86,11 +86,22 @@ This will remove a single garrison specified by its ID. At present, nothing is r
 ```
 
 ## POST /login
-Receives a username and password in a JSON format, and authenticates the credentials. At present, this endpoint is extremely superficial. Under the hood, it is checking the username and password, but all this does in the database is toggle a boolean.
+Receives a username and password in a JSON format, authenticates the credentials, and returns the logged in user.
 ```
 {
     "username": "admin",
     "password": "admin"
+}
+```
+
+Returns the following:
+```
+{
+    "id": 1,
+    "username": "admin",
+    "password": "admin",
+    "loggedIn": true,
+    "admin": true
 }
 ```
 
@@ -102,9 +113,3 @@ Receives a username and password in a JSON format, and authenticates the credent
     "password": "admin"
 }
 ```
-
-
--sudo vim /etc/profile.d/env.sh
--export {env-variable-name}='{env_variable};
--source /etc/profile.d/env.sh
--echo ${env-variable-name}
