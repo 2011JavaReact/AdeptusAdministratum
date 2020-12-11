@@ -16,6 +16,13 @@ public class User {
 		this.username = username;
 		this.password = password;
 	}
+	
+	public User(String username, String password, boolean isLoggedIn, boolean isAdmin) {
+		this.username = username;
+		this.password = password;
+		this.isLoggedIn = isLoggedIn;
+		this.isAdmin = isAdmin;
+	}
 
 	public User(int id, String username, String password, boolean isLoggedIn, boolean isAdmin) {
 		this.id = id;

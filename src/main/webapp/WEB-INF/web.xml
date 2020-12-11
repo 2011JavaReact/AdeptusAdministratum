@@ -44,6 +44,19 @@
 	</servlet-mapping>
 
 	<servlet>
+		<servlet-name>UserCRUDServlet</servlet-name>
+		<servlet-class>com.revature.karl.servlet.UserCRUDServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>UserCRUDServlet</servlet-name>
+		<url-pattern>/users</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>UserCRUDServlet</servlet-name>
+		<url-pattern>/users/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
 		<servlet-name>EmpireServlet</servlet-name>
 		<servlet-class>com.revature.karl.servlet.EmpireServlet</servlet-class>
 	</servlet>
@@ -68,7 +81,7 @@
 		<servlet-name>UserServlet</servlet-name>
 		<url-pattern>/logout</url-pattern>
 	</servlet-mapping>
-	
+
 	<filter>
 		<filter-name>CorsFilter</filter-name>
 		<filter-class>org.apache.catalina.filters.CorsFilter</filter-class>

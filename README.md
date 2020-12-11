@@ -15,6 +15,9 @@ This will return an array of all planets.
 ## GET /garrisons
 This will return an array of all garrisons.
 
+## GET /users
+This will return an array of all users.
+
 ## GET /planets/#
 This will return a single planet specified by its ID.
 ```
@@ -25,6 +28,12 @@ This will return a single planet specified by its ID.
 This will return a single garrison specified by its ID.
 ```
 .../AdeptusAdministratum/garrisons/12
+```
+
+## GET /users/#
+This will return a single user specified by its ID.
+```
+.../AdeptusAdministratum/users/2
 ```
 
 ## POST /planets
@@ -44,6 +53,17 @@ This will create a new garrison in the database. Send the new garrison as a JSON
 {
     "chapter": "Astra Militarum",
     "size": 1000
+}
+```
+
+## POST /users
+This will create a new user in the database. Send the new user as a JSON. The response will contain the new user along with its ID in the database.
+```
+{
+    "username": "test123",
+    "password": "password123",
+    "admin": false,
+    "loggedIn": false
 }
 ```
 
@@ -73,6 +93,20 @@ This will update a single garrison specified by its ID. Send the updated garriso
 }
 ```
 
+## PUT /users/#
+This will update a single user specified by its ID. Send the updated user information as a JSON. The response will contain the update user.
+```
+.../AdeptusAdministratum/users/2
+```
+```
+{
+    "username": "test123",
+    "password": "password123",
+    "admin": true,
+    "loggedIn": true
+}
+```
+
 ## DELETE /planets/#
 This will remove a single planet specified by its ID. At present, nothing is returned, and a console message is printed.
 ```
@@ -83,6 +117,12 @@ This will remove a single planet specified by its ID. At present, nothing is ret
 This will remove a single garrison specified by its ID. At present, nothing is returned, and a console message is printed.
 ```
 .../AdeptusAdministratum/garrisons/12
+```
+
+## DELETE /users/#
+This will remove a single user specified by its ID. At present, nothing is returned, and a console message is printed.
+```
+.../AdeptusAdministratum/users/2
 ```
 
 ## POST /login
